@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+#backend
+  rails_serv:
+    build:
+      context: ./rails
+    image: rails-image:3-bw
+    container_name: backend_container
+    restart: unless-stopped
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && rails db:migrate && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./rails:/rails
+    networks:
+      - usgs-network
+
+#Frontend
+  vue_serv:
+    build:
+      context: ./vue
+    image: node-image:18-bw
+    container_name: frontend_container
+    restart: unless-stopped
+    command: /bin/sh -c "npm run serve"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./vue:/vue
+      - /vue/node_modules
+    depends_on:
+      - rails_serv
+    networks:
+      - usgs-network
+
+#Docker Networks
+networks:
+  usgs-network:
+    driver: bridge
