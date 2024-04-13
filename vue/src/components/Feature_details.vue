@@ -167,7 +167,7 @@ export default {
     },
 
     updateFeature() {
-        if (!this.updater.title || !this.updater.mag_type || typeof this.updater.magnitude != 'number'
+        if (!this.updater.title || !this.updater.mag_type || isNaN(this.updater.magnitude)
             || this.updater.magnitude < -1 || this.updater.magnitude > 10) {
                 this.message = 'Incorrect data values!';
                 return
